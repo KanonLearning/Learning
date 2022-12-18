@@ -15,14 +15,9 @@
 // count()：数を数える、その結果を取得
 // max()：最大値を取得
 // sum()：合計値を取得
-// 
-// 
+//
+//
 // ※これらはもともとallの持ち物（メソッド）でこの中で指定して操作を行う
-
-
-
-
-
 
 namespace App\Http\Controllers;
 
@@ -91,7 +86,7 @@ class ArticleController extends Controller
         $data = ['articles' => $articles];
         //上の$articles（記事の一覧データ）を連想配列にして$data変数の中に入れている。今後は$data['articles']で記事の一覧を呼び出せる
         //キーは添字（0とか1とか）の代わりに使う名前。今回はarticlesがキーとなる。
-        return view('articles.index' , $data);
+        return view('articles.index', $data);
         //view()はビューにデータを渡してHTMLを生成する。引数はそれぞれ（'使用するテンプレートファイル今回はarticlesフォルダの中のindex.blade.phpを使う。'　,　'ビューに渡すデータ、今回は記事一覧のデータ'）
         //使用するファイルを示すときは（フォルダ名.使用するbladeファイル（.blade.phpは省略））の形式
     }
@@ -103,7 +98,12 @@ class ArticleController extends Controller
      */
     public function create()
     {
-        //
+        $article = new Article();
+        // インスタンスをここで生成（newが入っていることに注目）。フォームに書かれたものを入れる容器の役割を持つ
+        $data = ['article' => $article];
+        // viewに渡してあげるために、$dataに入れてあげる
+        return view('articles.create', $data);
+        // articlesフォルダのcreateファイルに$dataを渡してあげる
     }
 
     /**
@@ -114,7 +114,29 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'title' => 'required|max:255',
+            // titleの中はこんな条件だよ👉requrired = 必須項目だよ　　｜ = かつ　　max:255 = 文字数のmaxは255文字までだよ
+            'body' => 'required'
+            // bodyは必須項目だよ
+        ]);
+        $article = new Article();
+        //ここでいうArticleはクラス、$articleがインスタンスにあたる
+        $article->title = $request->title;
+        // インスタンス->プロパティ名 = 値
+        // $articleというインスタンスのプロパティ$titleに$request（フォームデータ）のname="title"を当てはめる
+        $article->body = $request->body;
+        // 上でtitleに対してやっていることのbody（本文）バージョン
+        $article->save();
+        // formのデータを保存する
+        // modelクラスにすでにCRUDのためのメソッドが用意されているためわざわざSQLを書く必要がない。
+
+        return redirect(route('articles.index'));
+        // コントローラーではreturn view でレスポンスを返すかreturn redirectでリクエストを作り直す
+        // 今回はredirectでデータの登録・更新・削除等をしてリクエスト
+        //view()はブレードファイルと渡す値や変数などを指定してファイルの内容を表示させる
+        //redirect()はURLもしくはあらかじめ作られているルート名を指定し、コントローラーの処理（CRUDのCUD部分） ＋ ブレードファイルの内容を表示させる（CRUDのR部分）
+        // 全ての処理を終えた後に表示されるURLは/Articlesになる
     }
 
     /**
