@@ -99,9 +99,11 @@ class ArticleController extends Controller
     public function create()
     {
         $article = new Article();
-        // インスタンスをここで生成（newが入っていることに注目）。フォームに書かれたものを入れる容器の役割を持つ
+        // インスタンスをここで生成（newが入っていることに注目）。＄articleがフォームに書かれたものを入れる容器の役割を持つ
+        // newによってArticleクラスという設計図に合わせて＄articleというモノを作る感じ。
         $data = ['article' => $article];
         // viewに渡してあげるために、$dataに入れてあげる
+        // ここの【'article' ＝＞ $article】は連想配列で、keyの’article’で＄articleの中身を呼び出せるようにしている
         return view('articles.create', $data);
         // articlesフォルダのcreateファイルに$dataを渡してあげる
     }
@@ -121,7 +123,7 @@ class ArticleController extends Controller
             // bodyは必須項目だよ
         ]);
         $article = new Article();
-        //ここでいうArticleはクラス、$articleがインスタンスにあたる
+        //ここで$articleというモノのガワ（インスタンス）をArticle（）という設計図（クラス）をもとに生成している
         $article->title = $request->title;
         // インスタンス->プロパティ名 = 値
         // $articleというインスタンスのプロパティ$titleに$request（フォームデータ）のname="title"を当てはめる
@@ -130,6 +132,12 @@ class ArticleController extends Controller
         $article->save();
         // formのデータを保存する
         // modelクラスにすでにCRUDのためのメソッドが用意されているためわざわざSQLを書く必要がない。
+
+
+
+        // 【大事】上記でガワ（インスタンス）を生成され、インスタンス->プロパティ名 = 値でプロパティを決められたモノの総称（＄article）をオブジェクトという
+
+
 
         return redirect(route('articles.index'));
         // コントローラーではreturn view でレスポンスを返すかreturn redirectでリクエストを作り直す
@@ -146,8 +154,11 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Article $article)
+    // Articleクラス（Articleインスタンス）を経由して＄articleを受け取っている
+    // 
     {
-        //
+        $data = ['article' => $article];
+        return view('articles.show',$data);
     }
 
     /**
