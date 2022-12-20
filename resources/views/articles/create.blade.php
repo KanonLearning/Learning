@@ -2,6 +2,8 @@
 @section('content') 
 @include('commons.errors')
 <form action="{{ route('articles.store') }}" method="post">
+<!-- formのmethodは主にpostになるが、検索など情報の取得が目的になると、getを指定する場合もある -->
+
 <!-- route()はweb.phpで設定したnameを()内に記述することでそのページにアクセス（データを飛ばしたり、ページ遷移したりできる）できる -->
 <!-- ｛｛｝｝はHTMLの記述の中にPHPのスクリプトを混ぜたいときに使える -->
 <!-- method属性はどの方式で送るかを決める。今回はformタグ内のデータをarticlesフォルダのstore.blade.phpに”どの方式で送るのか”ということ -->
