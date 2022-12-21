@@ -4,12 +4,13 @@
 <!-- dl = 定義リストを作成 -->
     <dt>タイトル</dt>
     <!-- dlの中のタイトル -->
-    <dd><input type="text" name="title" value="{{ old('title') }}"></dd>
+    <dd><input type="text" name="title" value="{{ old('title',$article->title) }}"></dd>
     <!-- old（）でバリデーションエラー時に直前の値を残す。valueじゃないと入力欄の中に出てこないので注意！！ -->
+    <!-- old（）は第二引数に指定された値をデフォの値としてあらかじめ出力できる -->
     <!-- dlの中の本文にあたる -->
     <dt>本文</dt>
     <!-- タイトル -->
-    <dd><textarea name="body" rows="5">{{ old('body') }}</textarea></dd>
+    <dd><textarea name="body" rows="5">{{ old('body',$article->body) }}</textarea></dd>
     <!-- titleと同じくold（）で直前の値を残している -->
-<!-- 本文 -->
+    <!-- old（）は第二引数に指定された値をデフォの値としてあらかじめ出力できる -->
 </dl>

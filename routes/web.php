@@ -33,10 +33,10 @@ Route::get('/articles/create', [ArticleController::class,'create'])->name('artic
 
 
 Route::post('/articles', [ArticleController::class,'store'])->name('articles.store');
-// フォームデータが送られた送信先の送り先URLも定義しておかないと<form action='{{ articles.store }}'が意味なくなっちゃう。使えなくなっちゃう。
+// フォームデータが送られた送信先の送り先URLも定義しておかないと<form action='{{ route（’articles.store’） }}'が意味なくなっちゃう。使えなくなっちゃう。
 
 
-Route::get('/article/{article}',[ArticleController::class,'show'])->name('articles.show');
+Route::get('/article/{article}', [ArticleController::class,'show'])->name('articles.show');
 // getはHTTPリクエストメソッドの一つ。”ブラウザ側がサーバーに対してだすお願い”のこと。getは訳すと”このページを頂戴”になる。
 
 // ｛article｝はパスパラメータを受け取るため。
@@ -44,3 +44,7 @@ Route::get('/article/{article}',[ArticleController::class,'show'])->name('articl
 // ｛｝はそのままの文字列、つまり/articles/articleになってしまわないようにするため
 
 // パスパラメータとは特定なページ、サイト等を表示するために”パス”に書き込まれる”パラメータ”のこと。決して”渡す”のパスという意味ではない
+Route::get('/articles/{article}/edit',[ArticleController::class,'edit'])->name('articles.edit');
+// 編集画面の表示
+Route::patch('/articles/{article}',[ArticleController::class,'update'])->name('articles.update');
+// 編集内容を使ってアップデートする

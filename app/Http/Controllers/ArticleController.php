@@ -124,6 +124,7 @@ class ArticleController extends Controller
         ]);
         $article = new Article();
         //ここで$articleというモノのガワ（インスタンス）をArticle（）という設計図（クラス）をもとに生成している
+        // ここではArticle.php（model）をもとにインスタンスを生成、つまり、インスタンスなんて名前が付いてはいるが$articleの中身はclass Article である。で、下記のプロパティ決めで、Article.phpには影響しない形でclass Articleの中身を拡張しているイメージ。
         $article->title = $request->title;
         // インスタンス->プロパティ名 = 値
         // $articleというインスタンスのプロパティ$titleに$request（フォームデータ）のname="title"を当てはめる
@@ -181,8 +182,19 @@ class ArticleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Article $article)
+    // Requestクラス自体が引数でその中身を使うときは＄request（インスタンス）を使ってね。っていう意味。
+    // Articleというクラスを引数としてセットしているけど、＄article（インスタンス）を使ってね。という意味。
     {
-        //
+        $this->validate($request,[
+           'title' => 'required|max:255',
+           'body' => 'required' 
+        ]);
+        $article->title = $request->title;
+        $article->body = $request->body;
+        $article->save();
+        // ＄articleというインスタンスのプロパティを決めて、modelにあるsave（）を使って保存。
+        return redirect(route('articles.show',$article));
+        // controllerの処理をしたうえで、route()に紐づいているブレードファイルを表示する
     }
 
     /**
