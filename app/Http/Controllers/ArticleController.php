@@ -23,6 +23,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -33,7 +34,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        $articles = Article::all();
+        $articles = Article::orderBy('created_at', 'desc')->paginate(10);
         // Article（モデルクラス(app\Models\Article.php)）のall()(今回はスタティックメソッド)を呼び出している。
         // Articleクラスに紐づいているテーブルに対して、レコードの全取得を行うSQLを実行
         // 今回はそれの戻り値を$ariclesに代入している
@@ -125,6 +126,8 @@ class ArticleController extends Controller
         $article = new Article();
         //ここで$articleというモノのガワ（インスタンス）をArticle（）という設計図（クラス）をもとに生成している
         // ここではArticle.php（model）をもとにインスタンスを生成、つまり、インスタンスなんて名前が付いてはいるが$articleの中身はclass Article である。で、下記のプロパティ決めで、Article.phpには影響しない形でclass Articleの中身を拡張しているイメージ。
+        $article->user_id = \Auth::id();
+        // \Authは使えなかった。代わりに「use Auth.phpの相対パス」をうえに書き込むことでエラーが出なくなった。
         $article->title = $request->title;
         // インスタンス->プロパティ名 = 値
         // $articleというインスタンスのプロパティ$titleに$request（フォームデータ）のname="title"を当てはめる
@@ -170,6 +173,8 @@ class ArticleController extends Controller
      */
     public function edit(Article $article)
     {
+        $this->authorize($article);
+        // 他人（記事を投稿していない人間）の手で勝手に編集できないようにする
         $data = ['article' => $article];
         return view('articles.edit',$data);
     }
@@ -185,6 +190,8 @@ class ArticleController extends Controller
     // Requestクラス自体が引数でその中身を使うときは＄request（インスタンス）を使ってね。っていう意味。
     // Articleというクラスを引数としてセットしているけど、＄article（インスタンス）を使ってね。という意味。
     {
+        $this->authorize($article);
+        // 勝手に更新できないように
         $this->validate($request,[
            'title' => 'required|max:255',
            'body' => 'required' 
@@ -205,6 +212,21 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $this->authorize($article);
+        // 勝手に削除できないように
+        $article->delete();
+        return redirect(route('articles.index'));
+    }
+
+    public function bookmark_articles()
+    {
+        $articles = \Auth::user()->bookmark_articles()->orderBy('created_at', 'desc')->paginate(10);
+        // ログインユーザーがブックマークしたものを日付の降順で並べる。１ページあたり１０件に区切る。
+        $data = [
+            'articles' => $articles,
+            // 連想配列に取得した記事データを格納
+            // articlesがキーとなる
+        ];
+        return view('articles.bookmarks', $data);
     }
 }
