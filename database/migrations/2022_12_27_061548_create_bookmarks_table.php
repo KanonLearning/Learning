@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     /**
      * Run the migrations.
      *
@@ -21,7 +20,9 @@ return new class extends Migration
             $table->timestamps();
             // created_atとupdated_at
 
-            $table->foreign('user_id')->references('id')->on('articles')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            // user_idカラムを外部キーに設定　usersテーブルのidカラムを参照　削除時は参照しているブックマーク(bookmarks)も一緒に削除する
+            $table->foreign('article_id')->references('id')->on('articles')->onDelete('cascade');
             // 外部キーの設定と連鎖的に削除する処理の指定
             $table->unique(['user_id','article_id']);
         });

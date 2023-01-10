@@ -3,6 +3,7 @@
 // 最終的に作成したものをどうやって表示するか（URL）を決める　＝　ルーティング
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\BookmarkController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
