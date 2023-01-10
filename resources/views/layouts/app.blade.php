@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="/main.css">
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!-- 'resources/css/app.css'からのcss読み込み -->
 </head>
 <body>
@@ -24,15 +24,20 @@
                 <!-- マイページの作成 -->
                 <li><a href="{{ route('articles.index') }}" class="tab-item{{ Request::is('articles') ? 'active' : '' }}">記事検索</a></li>
                 <!-- 記事検索のフォーム -->
+                <li class="nav-item"><a class="nav-link tab-item{{ Request::is('bookmarks') ? ' active' : ''}}" href="{{ route('bookmarks') }}">ブックマーク</a></li>
                 <li>
-                   <form action="{{ logout }}" method="POST" on-submit=" return confirm('ログアウトしますか？')">
+                   <form action="{{ route('logout') }}" method="POST" on-submit="return confirm('ログアウトしますか？')">
                     @csrf
                     <button type="submit">ログアウト</button>
                    </form> 
                 </li>
                 @else
-                <li><a href="{{ route('login') }}">ログイン</a></li>
-                <li><a href="{{ route('register') }}">会員登録</a></li>
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link tab-item{{ Request::is('login') ? ' active' : ''}}" href="{{ route('login') }}">ログイン</a></li>
+                    <!-- ログイン済みじゃないときは、ログイン画面へのリンクを表示 -->
+                <li class="nav-item"><a class="nav-link tab-item{{ Request::is('register') ? ' active' : ''}}" href="{{ route('register') }}">会員登録</a></li>
+                <!-- ログイン済みであるときは、会員登録画面へのリンクを表示 -->
+                </ul>
                 @endif
             </ul>
         </nav>
@@ -45,5 +50,6 @@
     <footer>
         &copy; Laravel8 入門から開発実践まで
     </footer>
+    <script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
